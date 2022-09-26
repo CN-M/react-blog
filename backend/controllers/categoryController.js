@@ -50,6 +50,11 @@ exports.updateCategory = async (req, res, next) => {
     throw new Error('Category does not exist');
   }
 
+  const categoryExists = await Category.findOne({ name: req.body.name.toLowerCase() });
+  if (categoryExists) {
+    res.status(400);
+    throw new Error('Category already exists');
+  }
   // const updatedCategory = await Category.findOne(req.params.category);
   const updatedCategory = await Category.findOneAndUpdate({ name: req.params.category }, { name: req.body.name.toLowerCase() }, { new: true });
   res.status(200).json(updatedCategory);

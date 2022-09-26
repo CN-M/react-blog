@@ -34,15 +34,20 @@ exports.getCategoryPosts = async (req, res, next) => {
 // Get specific post // GET
 exports.postDetail = async (req, res, next) => {
   const post = await Post.findOne({ slug: req.params.slug });
+  if (!post) {
+    res.status(400);
+    throw new Error('Post not found');
+  }
   res.status(200).json(post);
   // res.status(200).json(`Get specific post: ${req.params.id}`);
 };
 
 // Create a new post // POST // Complete
 exports.createPost = async (req, res, next) => {
-  if (!req.body.text) {
+  const { title, body, username } = req.body;
+  if (!title || !body || !username) {
     res.status(400);
-    throw new Error('Please add a text');
+    throw new Error('Please add text');
   }
 
   // generate slug
@@ -55,9 +60,9 @@ exports.createPost = async (req, res, next) => {
 
   const newPost = await Post.create({
     title: req.body.title,
-    description: req.body.description,
+    body: req.body.body,
     photo: req.body.photo,
-    username: req.body.username,
+    username: req.body.username.toLowerCase(),
     categories: req.body.categories,
     slug,
   });
@@ -73,7 +78,7 @@ exports.updatePost = async (req, res, next) => {
     throw new Error('Post does not exist');
   }
 
-  if (!req.username) {
+  if (!req.body.username) {
     res.status(400);
     throw new Error('Post does not exist');
   }
@@ -101,12 +106,12 @@ exports.deletePost = async (req, res, next) => {
     throw new Error('Post does not exist');
   }
 
-  if (!req.username) {
+  if (!req.body.username) {
     res.status(400);
     throw new Error('User not found');
   }
 
-  if (post.username !== req.body.username) {
+  if (post.username !== req.body.username.toLowerCase()) {
     res.status(401);
     throw new Error('Use not authorized');
   }

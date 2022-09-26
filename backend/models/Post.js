@@ -7,13 +7,13 @@ const PostSchema = new Schema(
       type: String,
       required: true,
     },
-    description: {
+    body: {
       type: String,
       required: true,
     },
     photo: {
       type: String,
-      required: true,
+      // required: true,
     },
     username: {
       type: String,
@@ -22,7 +22,7 @@ const PostSchema = new Schema(
     },
     categories: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: false,
         ref: 'Category',
       },
@@ -30,7 +30,7 @@ const PostSchema = new Schema(
     slug: {
       type: String,
       required: true,
-      unique: true,
+      // unique: true,
     },
   },
   { timestamps: true },
