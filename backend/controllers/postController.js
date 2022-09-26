@@ -3,7 +3,7 @@ const slugify = require('slugify');
 // Post model
 const Post = require('../models/Post');
 
-// Get list of all posts // GET
+// Get list of all posts // GET // Complete
 exports.getPosts = async (req, res, next) => {
   const posts = await Post.find();
   if (posts) {
@@ -14,7 +14,7 @@ exports.getPosts = async (req, res, next) => {
   }
 };
 
-// Get list of all posts of post // GET
+// Get list of all posts of category // GET
 exports.getCategoryPosts = async (req, res, next) => {
   const posts = await Post.find({
     categories: {
@@ -33,13 +33,12 @@ exports.getCategoryPosts = async (req, res, next) => {
 
 // Get specific post // GET
 exports.postDetail = async (req, res, next) => {
-  // const post = await Post.findOne({ _id: req.params.id });
-  // const post = await Post.findOne({ slug: req.params.slug });
-  res.status(200).json(`Get specific post: ${req.params.id}`);
-  // res.status(200).json(post);
+  const post = await Post.findOne({ slug: req.params.slug });
+  res.status(200).json(post);
+  // res.status(200).json(`Get specific post: ${req.params.id}`);
 };
 
-// Create a new post // POST
+// Create a new post // POST // Complete
 exports.createPost = async (req, res, next) => {
   if (!req.body.text) {
     res.status(400);
@@ -62,7 +61,8 @@ exports.createPost = async (req, res, next) => {
     categories: req.body.categories,
     slug,
   });
-  res.status(200).json('Create a new post');
+  // res.status(200).json('New post created');
+  res.status(200).json(newPost);
 };
 
 // Update a post // PUT
@@ -93,9 +93,9 @@ exports.updatePost = async (req, res, next) => {
   res.status(200).json(updatedPost);
 };
 
-// Delete a specifc post // DELETE
+// Delete a specifc post // DELETE // Complete
 exports.deletePost = async (req, res, next) => {
-  const post = await Post.findOne({ name: req.params.slug });
+  const post = await Post.findOne({ slug: req.params.slug });
   if (!post) {
     res.status(400);
     throw new Error('Post does not exist');

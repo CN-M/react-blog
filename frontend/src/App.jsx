@@ -1,11 +1,18 @@
-import TopBar from "./components/topbar/topbar";
+import TopBar from "./components/topbar/TopBar";
+import Show from "./components/show/Show";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
 
 const App = () => {
   return (
-    <div className="App">
-      <TopBar />
-    </div>
+    <>
+      <Router>
+        <div className="App">
+          <TopBar />
+          <Show />
+        </div>
+      </Router>
+    </>
   );
 }
 

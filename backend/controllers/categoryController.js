@@ -1,6 +1,6 @@
 const Category = require('../models/Category');
 
-// Get All Categories // GET
+// Get All Categories // GET // Complete
 exports.getCategories = async (req, res, next) => {
   const categories = await Category.find();
   if (categories) {
@@ -11,7 +11,7 @@ exports.getCategories = async (req, res, next) => {
   }
 };
 
-// Get Specific Category // GET
+// Get Specific Category // GET // Complete
 exports.categoryDetail = async (req, res, next) => {
   const category = await Category.findOne({ name: req.params.category.toLowerCase() });
   if (category) {
@@ -22,7 +22,7 @@ exports.categoryDetail = async (req, res, next) => {
   }
 };
 
-// Create New Catagory // POST
+// Create New Catagory // POST // Complete
 exports.createCategory = async (req, res, next) => {
   const name = req.body.name.toLowerCase();
 
@@ -42,7 +42,7 @@ exports.createCategory = async (req, res, next) => {
   res.status(200).json(category);
 };
 
-// Update a catagory // PUT
+// Update a catagory // PUT // Complete
 exports.updateCategory = async (req, res, next) => {
   const category = await Category.findOne({ name: req.params.category });
   if (!category) {
@@ -55,14 +55,13 @@ exports.updateCategory = async (req, res, next) => {
   res.status(200).json(updatedCategory);
 };
 
-// Delete a specifc catagory // DELETE
+// Delete a specifc catagory // DELETE // Complete
 exports.deleteCategory = async (req, res, next) => {
   const category = await Category.findOne({ name: req.params.category.toLowerCase() });
   if (!category) {
     res.status(400);
     throw new Error('Category does not exist');
   }
-
   await category.remove();
   res.status(200).json(`Category ${req.params.category} has been deleted`);
 };
