@@ -1,0 +1,116 @@
+const slugify = require('slugify');
+
+// Post model
+const Post = require('../models/Post');
+
+// Get list of all posts // GET
+exports.getPosts = async (req, res, next) => {
+  const posts = await Post.find();
+  if (posts) {
+    res.status(200).json(posts);
+  } else {
+    res.status(400);
+    throw new Error('No posts found');
+  }
+};
+
+// Get list of all posts of post // GET
+exports.getCategoryPosts = async (req, res, next) => {
+  const posts = await Post.find({
+    categories: {
+      $in: [req.params.post],
+    },
+  });
+  if (posts) {
+    res.status(200).json(posts);
+  } else {
+    res.status(400);
+    throw new Error('No posts found');
+  }
+  res.status(200).json(`Get list of all posts of post ${req.params.post}`);
+  // res.status(200).json(posts);
+};
+
+// Get specific post // GET
+exports.postDetail = async (req, res, next) => {
+  // const post = await Post.findOne({ _id: req.params.id });
+  // const post = await Post.findOne({ slug: req.params.slug });
+  res.status(200).json(`Get specific post: ${req.params.id}`);
+  // res.status(200).json(post);
+};
+
+// Create a new post // POST
+exports.createPost = async (req, res, next) => {
+  if (!req.body.text) {
+    res.status(400);
+    throw new Error('Please add a text');
+  }
+
+  // generate slug
+  let slug = slugify(req.body.title, { remove: /[*+~.()'"!:@]/g, lower: true });
+  const slugExist = await Post.find({ slug });
+  if (slugExist) {
+    const extraId = Math.floor(Math.random() * 10_000);
+    slug += `-${extraId.toString()}`;
+  }
+
+  const newPost = await Post.create({
+    title: req.body.title,
+    description: req.body.description,
+    photo: req.body.photo,
+    username: req.body.username,
+    categories: req.body.categories,
+    slug,
+  });
+  res.status(200).json('Create a new post');
+};
+
+// Update a post // PUT
+exports.updatePost = async (req, res, next) => {
+  const post = await Post.findOne({ slug: req.params.slug });
+  if (!post) {
+    res.status(400);
+    throw new Error('Post does not exist');
+  }
+
+  if (!req.username) {
+    res.status(400);
+    throw new Error('Post does not exist');
+  }
+
+  if (post.username !== req.body.username) {
+    res.status(401);
+    throw new Error('Use not authorized');
+  }
+
+  const updatedPost = await Post.findOneAndUpdate(
+    req.params.slug,
+    {
+      $set: req.body,
+    },
+    { new: true },
+  );
+  res.status(200).json(updatedPost);
+};
+
+// Delete a specifc post // DELETE
+exports.deletePost = async (req, res, next) => {
+  const post = await Post.findOne({ name: req.params.slug });
+  if (!post) {
+    res.status(400);
+    throw new Error('Post does not exist');
+  }
+
+  if (!req.username) {
+    res.status(400);
+    throw new Error('User not found');
+  }
+
+  if (post.username !== req.body.username) {
+    res.status(401);
+    throw new Error('Use not authorized');
+  }
+
+  await post.remove();
+  res.status(200).json('Post has been deleted');
+};
