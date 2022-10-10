@@ -52,11 +52,8 @@ exports.createPost = async (req, res, next) => {
 
   // generate slug
   let slug = slugify(req.body.title, { remove: /[*+~.()'"!:@]/g, lower: true });
-  const slugExist = await Post.find({ slug });
-  if (slugExist) {
-    const extraId = Math.floor(Math.random() * 10_000);
-    slug += `-${extraId.toString()}`;
-  }
+  const extraId = Math.floor(Math.random() * 10_000);
+  slug += `-${extraId.toString()}`;
 
   const newPost = await Post.create({
     title: req.body.title,

@@ -32,10 +32,10 @@ app.use(helmet());
 app.use(compression());
 
 // Site routes
-// app.use('/', (req, res, next) => res.redirect('/posts'));
 app.use('/posts', postRoute);
 app.use('/users', userRoute);
 app.use('/categories', categoryRoute);
+app.use('/', (req, res, next) => res.redirect('/posts'));
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => next(createError(404)));
